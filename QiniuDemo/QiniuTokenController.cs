@@ -19,7 +19,7 @@ namespace QiniuDemo
         public QiniuToken UploadToken()
         {
             Config.ACCESS_KEY = "cCQ2WJbrXVY1yRHDHBVXfKLAoU5jVa72-Q-aEY39";
-            Config.SECRET_KEY = "W8ELTSoeo540eBLm4EameoiAaxIxSlCgyUXvvhUa";
+            Config.SECRET_KEY = "";
             string bucket = "ylhyh";
             PutPolicy put = new PutPolicy(bucket);
             put.CallBackUrl = "http://ylhyh.onmypc.net:90/QiniuDemo/api/QiniuCallback/Upload";
