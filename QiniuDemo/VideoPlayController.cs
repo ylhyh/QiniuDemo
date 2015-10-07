@@ -24,7 +24,7 @@ namespace QiniuDemo
         [ActionName("download")]
         public HttpResponseMessage Download([FromUri]int videoId)
         {
-            Config.ACCESS_KEY = "cCQ2WJbrXVY1yRHDHBVXfKLAoU5jVa72-Q-aEY39";
+            Config.ACCESS_KEY = "";
             Config.SECRET_KEY = "";
             //ToDo 根据videoId找到File Key
 

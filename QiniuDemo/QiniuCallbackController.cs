@@ -205,7 +205,7 @@ namespace QiniuDemo
                 HttpResponseMessage responseResult = client.PostAsync("http://api.qiniu.com/pfop/", content).Result;
                 JObject result = responseResult.Content.ReadAsAsync<JObject>().Result;
                 */
-
+                /*
                 //Use the first frame as thumbnail.
                 string thumbnail = "vframe/jpg/offset/7";
 
@@ -238,6 +238,7 @@ namespace QiniuDemo
                 IOClient ioClient = new IOClient();
                 ioClient.PutFile(upToken, thumbKey, thumbFilepath, extra);
                 File.Delete(thumbFilepath);
+                */
 
                 // 音视频切片： http://developer.qiniu.com/docs/v6/api/reference/fop/av/segtime.html
                 string fops = "avthumb/m3u8/segtime/15/video_240k";
@@ -314,23 +315,26 @@ namespace QiniuDemo
 
         private bool IsQiniuCallback(AuthenticationHeaderValue auth)
         {
-            string scheme = auth.Scheme;
-            string parameter = auth.Parameter;
+            bool result = false;
 
-            //$authstr = $_SERVER['HTTP_AUTHORIZATION'];
-            //        if (strpos($authstr, "QBox ") != 0)
-            //        {
-            //            return false;
-            //        }
-            //$auth = explode(":", substr($authstr, 5));
-            //        if (sizeof($auth)!= 2 ||$auth[0] != C('accessKey')){
-            //            return false;
-            //        }
-            //$data = "/callback.php\n".file_get_contents('php://input');
-            //        return URLSafeBase64Encode(hash_hmac('sha1',$data, C("secretKey"), true)) == $auth[1];
+            if (auth != null
+                && auth.Scheme != null
+                && auth.Parameter != null
+                && auth.Scheme == "QBox")
+            {
+                string[] parameters = auth.Parameter.Split(':');
 
-            string authstr = "";
-            return true;
+                if (parameters.Length == 2)
+                {
+                    string encodedData = parameters[1];
+
+                    HttpContextBase context=(HttpContextBase )Request.Properties["MS_HttpContext"];
+                    string data = context.Request.Path + "\n" + HttpUtility.UrlDecode(context.Request.Form.ToString());
+                    result = Util.HAMCSHA1(data, Qiniu.Conf.Config.SECRET_KEY).Equals(encodedData);
+                }
+            }
+
+            return result;
         }
     }
 }

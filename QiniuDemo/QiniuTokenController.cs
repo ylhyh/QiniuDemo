@@ -18,7 +18,7 @@ namespace QiniuDemo
         [ActionName("upload")]
         public QiniuToken UploadToken()
         {
-            Config.ACCESS_KEY = "cCQ2WJbrXVY1yRHDHBVXfKLAoU5jVa72-Q-aEY39";
+            Config.ACCESS_KEY = "";
             Config.SECRET_KEY = "";
             string bucket = "ylhyh";
             PutPolicy put = new PutPolicy(bucket);
@@ -29,25 +29,28 @@ namespace QiniuDemo
             put.CallBackBody = "name=$(fname)&key=$(key)&hash=$(etag)&filesize=$(fsize)&avinfo=$(avinfo)";
 
             //refer to http://api.qiniu.com/status/get/prefop?id=<persistentId> for status inquery
-            //put.PersistentNotifyUrl = "http://ylhyh.onmypc.net:90/QiniuDemo/api/QiniuCallback/Fop";
+            put.PersistentNotifyUrl = "http://ylhyh.onmypc.net:90/QiniuDemo/api/QiniuCallback/Fop";
 
             // refer to http://developer.qiniu.com/docs/v6/api/reference/fop/av/segtime.html
             // refer to http://developer.qiniu.com/docs/v6/api/reference/fop/av/vframe.html
             // refer to http://developer.qiniu.com/docs/v6/api/reference/fop/saveas.html
             //String encodedEntryURI = Qiniu.Util.Base64URLSafe.Encode("ylhyh:asdfasfdasdfasdfasdf_hd.m3u8");
             //string URL = "|saveas/" + encodedEntryURI;
-            /*
+            
             string thumbnail = "vframe/jpg/offset/7";
 
             string thumbKey = "wobo_" + Guid.NewGuid().ToString("N") + ".jpg";
             string thumbencodedEntryURI = Qiniu.Util.Base64URLSafe.Encode(bucket + ":" + thumbKey);
+
+            string sign = "";
+
             string thumbsaveas = "|saveas/" + thumbencodedEntryURI;
 
 
             //put.PersistentOps = "avthumb/m3u8/segtime/15/video_240k|vframe/jpg/offset/1";// + URL;
             put.PersistentOps = thumbnail + thumbsaveas;
-            //put.PersistentPipeline = "";
-            */
+            put.PersistentPipeline = "pipeline1";
+
             return new QiniuToken() { UpToken = put.Token() };
         }
 
