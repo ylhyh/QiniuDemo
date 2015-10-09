@@ -5,6 +5,7 @@ using Qiniu.Util;
 using System;
 using System.Configuration;
 using System.Diagnostics;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -258,6 +259,50 @@ namespace QiniuSample
         }
 
         private bool IsQiniuCallback(AuthenticationHeaderValue auth)
+        {
+            //return true;
+            bool result = false;
+
+            if (auth != null
+                && auth.Scheme != null
+                && auth.Parameter != null
+                && auth.Scheme == "QBox")
+            {
+                string[] parameters = auth.Parameter.Split(':');
+
+                if (parameters.Length == 2)
+                {
+                    string encodedData = parameters[1];
+
+                    HttpRequest request = HttpContext.Current.Request;
+                    string data = request.Url.PathAndQuery + "\n" + request.Form.ToString();
+                    //result = QiniuHamcSha1(secretKey, data).Equals(encodedData);
+                    byte[] pathAndQueryBytes = Encoding.UTF8.GetBytes(request.Url.PathAndQuery);
+                    byte[] dataBytes = Encoding.UTF8.GetBytes(request.Form.ToString());
+
+                    using (MemoryStream buffer = new MemoryStream())
+                    {
+                        buffer.Write(pathAndQueryBytes, 0, pathAndQueryBytes.Length);
+                        buffer.WriteByte((byte)'\n');
+                        if (dataBytes.Length > 0)
+                        {
+                            buffer.Write(dataBytes, 0, dataBytes.Length);
+                        }
+
+                        using (HMACSHA1 hamc = new HMACSHA1(Encoding.UTF8.GetBytes(secretKey)))
+                        {
+                            byte[] digest = hamc.ComputeHash(buffer.ToArray());
+                            string digestBase64 = Base64URLSafe.Encode(digest);
+                            result = accessKey.Equals(parameters[0]) && digestBase64.Equals(encodedData);
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private bool IsQiniuCallback2(AuthenticationHeaderValue auth)
         {
             return true;
             bool result = false;
