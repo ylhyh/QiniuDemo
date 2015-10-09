@@ -217,6 +217,18 @@ namespace QiniuSample
             return GetDownloadUrl(fileKey);
         }
 
+        [HttpGet]
+        [ActionName("private-playurl")]
+        public HttpResponseMessage PrivatePlayUrl(int videoId)
+        {
+            //refer to: http://developer.qiniu.com/docs/v6/sdk/csharp-sdk.html#private-download
+            //refer to: http://developer.qiniu.com/docs/v6/api/reference/fop/av/pm3u8.html
+
+            //根据Video Id获取到视频缩略图对应的m3u8文件Key
+            string fileKey = "m3u8_8262811ab0894fadb7b4f72c488e3af0.m3u?pm3u8/0";
+            return GetDownloadUrl(fileKey);
+        }
+
         private HttpResponseMessage GetDownloadUrl(string fileKey)
         {
             string baseUrl = GetPolicy.MakeBaseUrl(domain, fileKey);
