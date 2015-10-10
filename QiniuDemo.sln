@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QiniuDemo", "QiniuDemo\QiniuDemo.csproj", "{2C0B2FD5-996D-4972-B48B-A462873AB418}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QiniuSample", "QiniuSample\QiniuSample.csproj", "{1ECA42B7-0070-4E9C-A517-62E89589BAD1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EncodeDecodeTest", "EncodeDecodeTest\EncodeDecodeTest.csproj", "{DC43181D-3C82-48E4-AAB2-53B966AD3E57}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{1ECA42B7-0070-4E9C-A517-62E89589BAD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1ECA42B7-0070-4E9C-A517-62E89589BAD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1ECA42B7-0070-4E9C-A517-62E89589BAD1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC43181D-3C82-48E4-AAB2-53B966AD3E57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC43181D-3C82-48E4-AAB2-53B966AD3E57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC43181D-3C82-48E4-AAB2-53B966AD3E57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC43181D-3C82-48E4-AAB2-53B966AD3E57}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

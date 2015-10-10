@@ -11,6 +11,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Http;
 
@@ -41,7 +42,7 @@ namespace QiniuSample
             Debug.WriteLine("UpToken");
             
             PutPolicy put = new PutPolicy(bucket);
-            put.CallBackUrl = "http://ylhyh.onmypc.net:90/QiniuSample/api/Video/Callback";
+            put.CallBackUrl = "http://wobo.ylhyh.onmypc.net:810/QiniuSample/api/Video/Callback";
 
             //refer to http://developer.qiniu.com/docs/v6/api/overview/up/response/vars.html for available variables
             //refer to http://developer.qiniu.com/docs/v6/api/reference/fop/av/avinfo.html
@@ -100,7 +101,7 @@ namespace QiniuSample
 
                 string fops = thumbnail + thumbsaveas;
                 Pfop pfop = new Pfop();
-                string persistentId_thumb = pfop.Do(new EntryPath(bucket, fileKey), new string[] { fops }, new Uri("http://ylhyh.onmypc.net:90/QiniuSample/api/Video/Notify"), GetPipeline());
+                string persistentId_thumb = pfop.Do(new EntryPath(bucket, fileKey), new string[] { fops }, new Uri("http://wobo.ylhyh.onmypc.net:810/QiniuSample/api/Video/Notify"), GetPipeline());
 #if DEBUG
                 Debug.WriteLine(persistentId_thumb);
 #endif
@@ -114,7 +115,7 @@ namespace QiniuSample
 
                 fops += m3usaveas;
                 pfop = new Pfop();
-                string persistentId_m3u8 = pfop.Do(new EntryPath(bucket, fileKey), new string[] { fops }, new Uri("http://ylhyh.onmypc.net:90/QiniuSample/api/Video/Notify"), GetPipeline());
+                string persistentId_m3u8 = pfop.Do(new EntryPath(bucket, fileKey), new string[] { fops }, new Uri("http://wobo.ylhyh.onmypc.net:810/QiniuSample/api/Video/Notify"), GetPipeline());
 
 #if DEBUG
                 Debug.WriteLine(persistentId_m3u8);
@@ -215,18 +216,10 @@ namespace QiniuSample
 
             //根据Video Id获取到视频缩略图对应的m3u8文件Key
             string fileKey = ".m3u8";
-            return GetDownloadUrl(fileKey);
-        }
 
-        [HttpGet]
-        [ActionName("private-playurl")]
-        public HttpResponseMessage PrivatePlayUrl(int videoId)
-        {
-            //refer to: http://developer.qiniu.com/docs/v6/sdk/csharp-sdk.html#private-download
+            //使用pm3u8指令为每个ts文件生成download token.
             //refer to: http://developer.qiniu.com/docs/v6/api/reference/fop/av/pm3u8.html
-
-            //根据Video Id获取到视频缩略图对应的m3u8文件Key
-            string fileKey = "m3u8_8262811ab0894fadb7b4f72c488e3af0.m3u?pm3u8/0";
+            fileKey += "?pm3u8/0";
             return GetDownloadUrl(fileKey);
         }
 
@@ -260,7 +253,6 @@ namespace QiniuSample
 
         private bool IsQiniuCallback(AuthenticationHeaderValue auth)
         {
-            //return true;
             bool result = false;
 
             if (auth != null
@@ -275,52 +267,14 @@ namespace QiniuSample
                     string encodedData = parameters[1];
 
                     HttpRequest request = HttpContext.Current.Request;
-                    string data = request.Url.PathAndQuery + "\n" + request.Form.ToString();
-                    //result = QiniuHamcSha1(secretKey, data).Equals(encodedData);
-                    byte[] pathAndQueryBytes = Encoding.UTF8.GetBytes(request.Url.PathAndQuery);
-                    byte[] dataBytes = Encoding.UTF8.GetBytes(request.Form.ToString());
-
-                    using (MemoryStream buffer = new MemoryStream())
+                    Regex charConvert = new Regex(@"\%[a-z,A-Z]\d|\%\d[a-z,A-Z]|\%[a-z,A-Z][a-z,A-Z]");
+                    string requestBody = charConvert.Replace(request.Form.ToString(), delegate(Match match)
                     {
-                        buffer.Write(pathAndQueryBytes, 0, pathAndQueryBytes.Length);
-                        buffer.WriteByte((byte)'\n');
-                        if (dataBytes.Length > 0)
-                        {
-                            buffer.Write(dataBytes, 0, dataBytes.Length);
-                        }
+                        return match.Value.ToUpper();
+                    }).Replace("(", "%28").Replace(")", "%29").Replace("&", "\u0026");
 
-                        using (HMACSHA1 hamc = new HMACSHA1(Encoding.UTF8.GetBytes(secretKey)))
-                        {
-                            byte[] digest = hamc.ComputeHash(buffer.ToArray());
-                            string digestBase64 = Base64URLSafe.Encode(digest);
-                            result = accessKey.Equals(parameters[0]) && digestBase64.Equals(encodedData);
-                        }
-                    }
-                }
-            }
-
-            return result;
-        }
-
-        private bool IsQiniuCallback2(AuthenticationHeaderValue auth)
-        {
-            return true;
-            bool result = false;
-
-            if (auth != null
-                && auth.Scheme != null
-                && auth.Parameter != null
-                && auth.Scheme == "QBox")
-            {
-                string[] parameters = auth.Parameter.Split(':');
-
-                if (parameters.Length == 2)
-                {
-                    string encodedData = parameters[1];
-
-                    HttpContextBase context=(HttpContextBase )Request.Properties["MS_HttpContext"];
-                    string data = context.Request.Path + "\n" + context.Request.Form.ToString();
-                    result = QiniuHamcSha1(secretKey, data).Equals(encodedData);
+                    string data = request.Url.PathAndQuery + "\n" + requestBody;
+                    result = accessKey.Equals(parameters[0]) && QiniuHamcSha1(secretKey, data).Equals(encodedData);
                 }
             }
 
@@ -330,25 +284,6 @@ namespace QiniuSample
         private string QiniuHamcSha1(string key, string data)
         {
             return Base64URLSafe.Encode(HamcSha1(key, data));
-        }
-
-        private string HamcSha1Base64(string key, string data)
-        {
-            byte[] hashBytes = HamcSha1(key, data);
-            return Convert.ToBase64String(hashBytes);
-        }
-
-        private string HamcSha1Hex(string key, string data)
-        {
-            byte[] hashBytes = HamcSha1(key, data);
-            string result = null;
-
-            foreach (byte hash in hashBytes)
-            {
-                result += hash.ToString("X2");
-            }
-
-            return result;
         }
 
         private byte[] HamcSha1(string key, string data)
