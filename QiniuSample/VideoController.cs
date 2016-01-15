@@ -40,13 +40,14 @@ namespace QiniuSample
         public HttpResponseMessage UpToken()
         {
             Debug.WriteLine("UpToken");
-            
+
             PutPolicy put = new PutPolicy(bucket);
             put.CallBackUrl = "http://wobo.ylhyh.onmypc.net:810/QiniuSample/api/Video/Callback";
 
             //refer to http://developer.qiniu.com/docs/v6/api/overview/up/response/vars.html for available variables
             //refer to http://developer.qiniu.com/docs/v6/api/reference/fop/av/avinfo.html
-            put.CallBackBody = "name=$(fname)&key=$(key)&hash=$(etag)&filesize=$(fsize)&avinfo=$(avinfo)";
+            //put.CallBackBody = "name=$(fname)&UploadType=$(x:UploadType)&key=$(key)&hash=$(etag)&filesize=$(fsize)&avinfo=$(avinfo)";
+            put.CallBackBody = "name=$(fname)&UploadType=avatar&key=$(key)&hash=$(etag)&filesize=$(fsize)&avinfo=$(avinfo)";
  
             HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK);
             response.Content = new StringContent("{\"uptoken\":\"" + put.Token() + "\"}", Encoding.UTF8, "application/json");

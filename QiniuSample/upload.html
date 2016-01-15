@@ -19,6 +19,7 @@
         <a id="pickfiles">Select File</a>
     </div>
     <div id="errortip"></div>
+    <button id="uploadfiles">Start Upload</button>
     <script type="text/javascript">
         var uploader = Qiniu.uploader({
             runtimes: 'html5,flash,html4',    //上传模式,依次退化
@@ -40,13 +41,23 @@
             dragdrop: true,                   //开启可拖曳上传
             drop_element: 'container',        //拖曳上传区域元素的ID，拖曳文件或文件夹后可触发上传
             chunk_size: '4mb',                //分块上传时，每片的体积
-            auto_start: true,                 //选择文件后自动上传，若关闭需要自己绑定事件触发上传
+            auto_start: false,                 //选择文件后自动上传，若关闭需要自己绑定事件触发上传
             init: {
+                'PostInit': function () {
+                    //$('filelist').innerHTML = '';
+
+                    $('uploadfiles').onclick = function () {
+                        uploader.start();
+                        return false;
+                    };
+                },
                 'FilesAdded': function (up, files) {
                     plupload.each(files, function (file) {
                         // 文件添加进队列后,处理相关的事情
                         $('#container').append("<div><span>" + file.name + "</span>(<span id='" + file.id + "'></span>)</div>");
                     });
+                    debugger;
+                    uploader.start();
                 },
                 'BeforeUpload': function (up, file) {
                     // 每个文件上传前,处理相关的事情
