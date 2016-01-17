@@ -28,14 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.lstSource = new System.Windows.Forms.CheckedListBox();
-            this.btnMoveRight = new System.Windows.Forms.Button();
-            this.lstDest = new System.Windows.Forms.CheckedListBox();
             this.txtSourceAK = new System.Windows.Forms.TextBox();
             this.txtDestAK = new System.Windows.Forms.TextBox();
-            this.btnMoveLeft = new System.Windows.Forms.Button();
-            this.btnFetchFile = new System.Windows.Forms.Button();
-            this.btnStartMove = new System.Windows.Forms.Button();
+            this.btnCreateFetchFile = new System.Windows.Forms.Button();
             this.txtSourceSK = new System.Windows.Forms.TextBox();
             this.txtSourceBucket = new System.Windows.Forms.TextBox();
             this.lblSourceAK = new System.Windows.Forms.Label();
@@ -46,34 +41,11 @@
             this.lblDestBucket = new System.Windows.Forms.Label();
             this.txtDestSK = new System.Windows.Forms.TextBox();
             this.txtDestBacket = new System.Windows.Forms.TextBox();
+            this.lblSourceDomain = new System.Windows.Forms.Label();
+            this.txtSourceDomain = new System.Windows.Forms.TextBox();
+            this.chkPrivateBucket = new System.Windows.Forms.CheckBox();
+            this.btnCreateFetchBatch = new System.Windows.Forms.Button();
             this.SuspendLayout();
-            // 
-            // lstSource
-            // 
-            this.lstSource.FormattingEnabled = true;
-            this.lstSource.Location = new System.Drawing.Point(12, 125);
-            this.lstSource.Name = "lstSource";
-            this.lstSource.Size = new System.Drawing.Size(390, 340);
-            this.lstSource.TabIndex = 0;
-            // 
-            // btnMoveRight
-            // 
-            this.btnMoveRight.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.btnMoveRight.Location = new System.Drawing.Point(408, 310);
-            this.btnMoveRight.Name = "btnMoveRight";
-            this.btnMoveRight.Size = new System.Drawing.Size(90, 23);
-            this.btnMoveRight.TabIndex = 1;
-            this.btnMoveRight.Text = "-->>";
-            this.btnMoveRight.UseVisualStyleBackColor = true;
-            // 
-            // lstDest
-            // 
-            this.lstDest.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
-            this.lstDest.FormattingEnabled = true;
-            this.lstDest.Location = new System.Drawing.Point(504, 125);
-            this.lstDest.Name = "lstDest";
-            this.lstDest.Size = new System.Drawing.Size(411, 340);
-            this.lstDest.TabIndex = 2;
             // 
             // txtSourceAK
             // 
@@ -91,36 +63,15 @@
             this.txtDestAK.Size = new System.Drawing.Size(264, 21);
             this.txtDestAK.TabIndex = 3;
             // 
-            // btnMoveLeft
+            // btnCreateFetchFile
             // 
-            this.btnMoveLeft.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.btnMoveLeft.Location = new System.Drawing.Point(408, 351);
-            this.btnMoveLeft.Name = "btnMoveLeft";
-            this.btnMoveLeft.Size = new System.Drawing.Size(90, 23);
-            this.btnMoveLeft.TabIndex = 1;
-            this.btnMoveLeft.Text = "<<--";
-            this.btnMoveLeft.UseVisualStyleBackColor = true;
-            // 
-            // btnFetchFile
-            // 
-            this.btnFetchFile.Location = new System.Drawing.Point(408, 32);
-            this.btnFetchFile.Name = "btnFetchFile";
-            this.btnFetchFile.Size = new System.Drawing.Size(75, 23);
-            this.btnFetchFile.TabIndex = 4;
-            this.btnFetchFile.Text = "读取源文件";
-            this.btnFetchFile.UseVisualStyleBackColor = true;
-            this.btnFetchFile.Click += new System.EventHandler(this.btnFetchFile_Click);
-            // 
-            // btnStartMove
-            // 
-            this.btnStartMove.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnStartMove.Location = new System.Drawing.Point(410, 500);
-            this.btnStartMove.Name = "btnStartMove";
-            this.btnStartMove.Size = new System.Drawing.Size(87, 28);
-            this.btnStartMove.TabIndex = 5;
-            this.btnStartMove.Text = "开始移动";
-            this.btnStartMove.UseVisualStyleBackColor = true;
-            this.btnStartMove.Click += new System.EventHandler(this.btnStartMove_Click);
+            this.btnCreateFetchFile.Location = new System.Drawing.Point(129, 162);
+            this.btnCreateFetchFile.Name = "btnCreateFetchFile";
+            this.btnCreateFetchFile.Size = new System.Drawing.Size(273, 23);
+            this.btnCreateFetchFile.TabIndex = 4;
+            this.btnCreateFetchFile.Text = "生成Fetch源文件";
+            this.btnCreateFetchFile.UseVisualStyleBackColor = true;
+            this.btnCreateFetchFile.Click += new System.EventHandler(this.btnCreateFetchFile_Click);
             // 
             // txtSourceSK
             // 
@@ -208,29 +159,64 @@
             this.txtDestBacket.Size = new System.Drawing.Size(264, 21);
             this.txtDestBacket.TabIndex = 3;
             // 
+            // lblSourceDomain
+            // 
+            this.lblSourceDomain.AutoSize = true;
+            this.lblSourceDomain.Location = new System.Drawing.Point(34, 115);
+            this.lblSourceDomain.Name = "lblSourceDomain";
+            this.lblSourceDomain.Size = new System.Drawing.Size(89, 12);
+            this.lblSourceDomain.TabIndex = 6;
+            this.lblSourceDomain.Text = "Source Domain:";
+            // 
+            // txtSourceDomain
+            // 
+            this.txtSourceDomain.Location = new System.Drawing.Point(129, 112);
+            this.txtSourceDomain.Name = "txtSourceDomain";
+            this.txtSourceDomain.Size = new System.Drawing.Size(273, 21);
+            this.txtSourceDomain.TabIndex = 3;
+            // 
+            // chkPrivateBucket
+            // 
+            this.chkPrivateBucket.AutoSize = true;
+            this.chkPrivateBucket.Location = new System.Drawing.Point(129, 140);
+            this.chkPrivateBucket.Name = "chkPrivateBucket";
+            this.chkPrivateBucket.Size = new System.Drawing.Size(156, 16);
+            this.chkPrivateBucket.TabIndex = 7;
+            this.chkPrivateBucket.Text = "It\'s a private Bucket?";
+            this.chkPrivateBucket.UseVisualStyleBackColor = true;
+            // 
+            // btnCreateFetchBatch
+            // 
+            this.btnCreateFetchBatch.Location = new System.Drawing.Point(651, 162);
+            this.btnCreateFetchBatch.Name = "btnCreateFetchBatch";
+            this.btnCreateFetchBatch.Size = new System.Drawing.Size(273, 23);
+            this.btnCreateFetchBatch.TabIndex = 4;
+            this.btnCreateFetchBatch.Text = "生成Fetch批处理文件";
+            this.btnCreateFetchBatch.UseVisualStyleBackColor = true;
+            this.btnCreateFetchBatch.Click += new System.EventHandler(this.btnCreateFetchBatch_Click);
+            // 
             // frmFileMove
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(927, 578);
+            this.ClientSize = new System.Drawing.Size(927, 196);
+            this.Controls.Add(this.chkPrivateBucket);
             this.Controls.Add(this.lblDestBucket);
+            this.Controls.Add(this.lblSourceDomain);
             this.Controls.Add(this.lblSourceBucket);
             this.Controls.Add(this.lblDestSK);
             this.Controls.Add(this.lblSourceSK);
             this.Controls.Add(this.lblDestAK);
             this.Controls.Add(this.lblSourceAK);
-            this.Controls.Add(this.btnStartMove);
-            this.Controls.Add(this.btnFetchFile);
+            this.Controls.Add(this.btnCreateFetchBatch);
+            this.Controls.Add(this.btnCreateFetchFile);
             this.Controls.Add(this.txtDestBacket);
             this.Controls.Add(this.txtDestSK);
             this.Controls.Add(this.txtDestAK);
+            this.Controls.Add(this.txtSourceDomain);
             this.Controls.Add(this.txtSourceBucket);
             this.Controls.Add(this.txtSourceSK);
             this.Controls.Add(this.txtSourceAK);
-            this.Controls.Add(this.lstDest);
-            this.Controls.Add(this.btnMoveLeft);
-            this.Controls.Add(this.btnMoveRight);
-            this.Controls.Add(this.lstSource);
             this.Name = "frmFileMove";
             this.Text = "七牛文件迁移";
             this.Load += new System.EventHandler(this.frmFileMove_Load);
@@ -240,15 +226,9 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.CheckedListBox lstSource;
-        private System.Windows.Forms.Button btnMoveRight;
-        private System.Windows.Forms.CheckedListBox lstDest;
         private System.Windows.Forms.TextBox txtSourceAK;
         private System.Windows.Forms.TextBox txtDestAK;
-        private System.Windows.Forms.Button btnMoveLeft;
-        private System.Windows.Forms.Button btnFetchFile;
-        private System.Windows.Forms.Button btnStartMove;
+        private System.Windows.Forms.Button btnCreateFetchFile;
         private System.Windows.Forms.TextBox txtSourceSK;
         private System.Windows.Forms.TextBox txtSourceBucket;
         private System.Windows.Forms.Label lblSourceAK;
@@ -259,6 +239,10 @@
         private System.Windows.Forms.Label lblDestBucket;
         private System.Windows.Forms.TextBox txtDestSK;
         private System.Windows.Forms.TextBox txtDestBacket;
+        private System.Windows.Forms.Label lblSourceDomain;
+        private System.Windows.Forms.TextBox txtSourceDomain;
+        private System.Windows.Forms.CheckBox chkPrivateBucket;
+        private System.Windows.Forms.Button btnCreateFetchBatch;
     }
 }
 
